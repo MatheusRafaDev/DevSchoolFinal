@@ -301,6 +301,23 @@ const Container = styled.div`
         height: 57px;
         
     }
+
+    .linha-alternada {
+        background-color: #fff;
+    }
+    .coluna-acao {
+        width: 1em;
+    }
+
+    .coluna-acao > button {
+        visibility: hidden;
+    }
+
+    tr:hover {
+        .coluna-acao > button {
+            visibility : visible;
+        }
+    }
 `
 
 const Conteudo = styled.div`
