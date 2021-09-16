@@ -19,7 +19,11 @@ app.get("/matricula", async (req, resp) => {
 app.post("/matricula", async (req, resp) => {
     try {
         let a = req.body
-    
+        
+        let r = await db.tb_matricula.findOne({ where: { nm_turma: a.nm_turma, nr_chamada: a.nr_chamada } })
+        if(r != null)
+            return resp.send({erro:"Não Pode Inserir Aluno Com a Mesma Chamada Em uma Mesma Turma!"})
+
         let alunos = await db.tb_matricula.create ({
             nm_aluno: a.nm_aluno,
             nr_chamada: a.nr_chamada,
@@ -27,11 +31,9 @@ app.post("/matricula", async (req, resp) => {
             nm_turma: a.nm_turma
         })
         resp.send(alunos);
-
     } catch (e) {
-        resp.send(e.toString());
+        console.log({erro: 'Digite Um Número no Campo Chamada'});
     }
-    
 });    
 
 app.delete("/matricula/:id", async (req,resp) => {
@@ -52,7 +54,11 @@ app.put("/matricula/:id", async (req,resp) => {
      let id = req.params.id
      let { nome,chamada,curso,turma} = req.body;
 
- 
+     let r = await db.tb_matricula.findOne({ where: { nm_turma: a.nm_turma, nr_chamada: a.nr_chamada } })
+     if(r != null)
+         return resp.send({erro:"Não Pode Inserir Aluno Com a Mesma Chamada Em uma Mesma Turma!"})
+
+         
      let q = await db.tb_matricula.update({nm_aluno: nome,nr_chamada: chamada,nm_curso: curso,nm_turma: turma }, {where: { id_matricula: id } })
  
      resp.sendStatus(200);

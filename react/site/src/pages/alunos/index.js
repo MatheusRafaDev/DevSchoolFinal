@@ -50,54 +50,70 @@ export default function Index() {
     }, [])
 
 
+    const ValidarResposta = (x) => {
+        console.log(x)
+        if (!x.erro)
+            return true;
+            toast.error(`${x.erro}`)
+
+        return false;
+    }
+
     async function inserir() {
         loading.current.continuousStart();
 
-        if (chamada > 0) {
+        let a = turma === '' || nome === '' || curso === '' || chamada === ''
 
-            let a = turma == '' || nome == '' || curso == '' || chamada == ''
-            if(a == true ) {
-                toast.error('Campos estão vazios'); 
-                loading.current.complete()
+
+            if(chamada < 0 ) {
+                toast.error('O campo chamada deve receber números positivos'); 
                 Listar();
-            }  
-            if(idAlterado == 0) {
-                let a = await api.Inserir(nome,curso,turma,chamada)    
+                loading.current.complete()
+            } 
+
+            else if (isNaN(chamada) === true) {
+                toast.error('Campo chamada devem ser número');
+                loading.current.complete()
+               }
+
+            else if (a == true) {
+                toast.error('Os campos devem ser preenchidos'); 
+                loading.current.complete()
+            } 
+
+            else if(idAlterado === 0) {
+                let a = await api.Inserir(nome,curso,turma,chamada)   
+                loading.current.complete()  
+                if (!ValidarResposta(a)){
+                    return
+                }  
+
                 toast.success('Aluno Adicionado'); 
                 loading.current.complete()
                 Listar();
+                LimparCampos()
             }
-            else {          
+
+            else if(idAlterado !== 0) {          
                 let a = await api.Editar(idAlterado,nome,curso,turma,chamada)
+
+                if (!ValidarResposta(a)){
+                    return  
+                    loading.current.complete()
+                }  
+
                 toast.success('Aluno Editado');
-
-                Listar()
-
                 loading.current.complete()
+                Listar()
+                LimparCampos()
+                
             }  
-                   
 
-        } else if(chamada < 0) {
-            toast.error('Números negativos não são aceitos'); 
-            loading.current.complete()
-        } else if (isNaN(chamada) == true) {
-            toast.error('Campo chamada devem ser número');
-            loading.current.complete()
-        } else if (chamada === '') {
-            toast.error('Campos estão vazios'); 
-            loading.current.complete()
-        } else if ()
-            toast.error('Número de chamada ja existente')
-            loading.current.complete()
-        {
-            
-        }         
 
        
 
         loading.current.complete()
         Listar()
-        LimparCampos()
     }
 
     async function remover1(id){
